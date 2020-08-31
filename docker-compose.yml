@@ -32,6 +32,7 @@ services:
   nextcloud-redis:
     image: redis:alpine
     command: /bin/sh -c 'redis-server --appendonly yes --requirepass nextcloud_redis_pass'
+    restart: unless-stopped
 
   nextcloud-cron:
     image: python:3-alpine
