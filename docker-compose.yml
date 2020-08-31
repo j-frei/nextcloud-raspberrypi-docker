@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  nextcloud-lamp:
+    build:
+      context: ./lamp_stack
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./webroot:/var/www/html
+      - ./certs:/etc/apache2/ssl:ro
+      - /data/data_nextcloud:/var/www/data
+    depends_on:
+      - nextcloud-db
+    restart: unless-stopped
+
+  nextcloud-db:
+    image: postgres:12-alpine
+    restart: unless-stopped
+    expose: 
+      - 5432
+    volumes:
+      - /data/db_nextcloud:/var/lib/postgresql/data
+    environment:
+      - DB_ROOT_PASSWORD=admin_password
+      - POSTGRES_DB=nextcloud
+      - POSTGRES_USER=nextcloud_user
+      - POSTGRES_PASSWORD=nextcloud_password
+    restart: unless-stopped
+
+  nextcloud-redis:
+    image: redis:alpine
+    command: /bin/sh -c 'redis-server --appendonly yes --requirepass nextcloud_redis_pass'
+
+  nextcloud-cron:
+    image: python:3-alpine
+    command: python /fakecron.py
+    volumes:
+      - ./lamp_stack/fakecron.py:/fakecron.py
+    environment:
+      - CRON_URL=https://nextcloud-lamp/cron.php
+      - SLEEP_SEC=300
+    restart: unless-stopped
