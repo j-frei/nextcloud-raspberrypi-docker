@@ -58,13 +58,16 @@
 ### Poststeps
  - Setup Redis for caching:
    ```bash
+   cd /path/to/rpi-docker-compose
+   # set redis credentials
+   docker-compose exec -u www-data nextcloud-lamp php /var/www/html/occ -n config:system:set redis host --value="nextcloud-redis"
+   docker-compose exec -u www-data nextcloud-lamp php /var/www/html/occ -n config:system:set redis password --value="nextcloud_redis_pass"
+   docker-compose exec -u www-data nextcloud-lamp php /var/www/html/occ -n config:system:set redis port --type=integer --value=6379
+   # enable redis for caching
    docker-compose exec -u www-data nextcloud-lamp php /var/www/html/occ -n config:system:set memcache.local --value="\OC\Memcache\Redis"
    docker-compose exec -u www-data nextcloud-lamp php /var/www/html/occ -n config:system:set memcache.distributed --value="\OC\Memcache\Redis"
    docker-compose exec -u www-data nextcloud-lamp php /var/www/html/occ -n config:system:set memcache.locking --value="\OC\Memcache\Redis"
    docker-compose exec -u www-data nextcloud-lamp php /var/www/html/occ -n config:system:set filelocking.enabled --type=boolean --value=true
-   docker-compose exec -u www-data nextcloud-lamp php /var/www/html/occ -n config:system:set redis host --value="nextcloud-redis"
-   docker-compose exec -u www-data nextcloud-lamp php /var/www/html/occ -n config:system:set redis password --value="nextcloud_redis_pass"
-   docker-compose exec -u www-data nextcloud-lamp php /var/www/html/occ -n config:system:set redis port --type=integer --value=6379
    ```
 ## Remarks
  - Redis needs a password in order to be used by Nextcloud. Nextcloud 19 seems unable to work with a passwordless Redis instance. The password security level does not matter since it only operates inside the Docker environment.
