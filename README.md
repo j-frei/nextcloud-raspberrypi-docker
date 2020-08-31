@@ -1,6 +1,6 @@
 # Docker-based Nextcloud on Raspberry Pi
 
-## Prerequisits
+## Prerequisites
  - Docker installed
  - Docker-compose installed
  - Mounted data directory for data storage
@@ -11,10 +11,10 @@
 ### Presteps
  - [Optional] Generate self-signed certificates:
    ```bash
-   openssl req -new -newkey rsa:4096 -sha256 -nodes -x509 -keyout ./cert.key -out ./cert.crt -subj "/C=ExCountry/ST=ExState/L=ExLoc/O=ExOrg/OU=ExOrgUnit/CN=*.myfritz.net"
+   openssl req -new -newkey rsa:4096 -sha256 -nodes -x509 -keyout ./cert.key -out ./cert.crt -subj "/C=DE/ST=ExState/L=ExLoc/O=ExOrg/OU=ExOrgUnit/CN=*.myfritz.net"
    ```  
    or get your certificates via Let's Encrypt.
- - Put certificates `tls.crt`, `tls.key` into the `./certs` folder
+ - Put certificates `cert.crt`, `cert.key` into the `./certs` folder
  - Access data directory and create directories:
    ```bash
    # move to data directory (e.g. USB HDD)
