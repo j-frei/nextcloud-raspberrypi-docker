@@ -5,6 +5,7 @@
  - Docker-compose installed
  - Mounted data directory for data storage
  - `$user` is part of group `docker`
+ - Setup was tested on Nextcloud 19.0.2
 
 ## Installation
 
@@ -69,5 +70,18 @@
    docker-compose exec -u www-data nextcloud-lamp php /var/www/html/occ -n config:system:set memcache.locking --value="\OC\Memcache\Redis"
    docker-compose exec -u www-data nextcloud-lamp php /var/www/html/occ -n config:system:set filelocking.enabled --type=boolean --value=true
    ```
+ - Setup webcron:
+   ```bash
+   # enable webcron / allow access using internal Docker hostname
+   docker-compose exec -u www-data nextcloud-lamp php /var/www/html/occ -n config:system:set trusted_domains 1 --value="nextcloud-lamp"
+   docker-compose exec -u www-data nextcloud-lamp php /var/www/html/occ -n background:webcron
+   ```
+ - Add your domain as trusted (e.g. `nextcloud.myfritz.net`):
+   ```bash
+   # enable webcron / allow access using internal Docker hostname
+   docker-compose exec -u www-data nextcloud-lamp php /var/www/html/occ -n config:system:set trusted_domains 2 --value="nextcloud.myfritz.net"
+   ```
+
 ## Remarks
  - Redis needs a password in order to be used by Nextcloud. Nextcloud 19 seems unable to work with a passwordless Redis instance. The password security level does not matter since it only operates inside the Docker environment.
+ - PostgreSQL is used instead of MariaDB due to its availability of ARM Docker images.
